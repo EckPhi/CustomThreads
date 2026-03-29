@@ -2,6 +2,8 @@
 
 This folder contains the GitHub Pages web app for generating Fusion 360 thread XML directly in the browser.
 
+Live site: [https://eckphi.github.io/CustomThreads/](https://eckphi.github.io/CustomThreads/)
+
 ## Files
 
 - `index.html`: UI layout and form inputs

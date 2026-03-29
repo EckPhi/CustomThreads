@@ -56,6 +56,15 @@ h1 {
   max-width: 70ch;
 }
 
+.live-link {
+  color: var(--accent-a);
+  font-weight: 600;
+}
+
+.live-link:hover {
+  color: var(--accent-b);
+}
+
 .grid {
   display: grid;
   grid-template-columns: 1.15fr 1fr;

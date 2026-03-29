@@ -8,6 +8,8 @@ Generate standardized ISO metric thread profiles optimized for 3D printing in XM
 
 The browser generator is in [web/index.html](web/index.html) and is deployed through GitHub Pages.
 
+- Live URL: [https://eckphi.github.io/CustomThreads/](https://eckphi.github.io/CustomThreads/)
+
 - Local preview:
 
 ```bash
