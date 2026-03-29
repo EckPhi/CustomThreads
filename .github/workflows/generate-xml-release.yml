@@ -49,12 +49,19 @@ jobs:
           # Also generate with alternative configurations (optional)
           mkdir -p build/xml
           mv 3DPrintedMetricThreads.xml build/xml/
+
+      - name: Run tests and validate generated XML
+        run: |
+          poetry run pytest -v
+          python3 -c "import xml.etree.ElementTree as ET; ET.parse('build/xml/3DPrintedMetricThreads.xml'); print('✅ Generated XML is valid')"
       
       - name: Create datetime-based version tag
         id: version
         run: |
-          VERSION=$(date -u +'v%Y.%m.%d-%H%M')
+          VERSION=$(date -u +"v%Y.%m.%d-%H%M%S-r${{ github.run_number }}")
+          GENERATED_AT=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
           echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "generated_at=$GENERATED_AT" >> $GITHUB_OUTPUT
           echo "Version: $VERSION"
       
       - name: Create release and upload asset
@@ -67,7 +74,7 @@ jobs:
           body: |
             Automatically generated 3D-printed metric thread profiles in XML format.
 
-            **Generated:** ${{ github.event.head_commit.timestamp }}
+            **Generated:** ${{ steps.version.outputs.generated_at }}
             **Commit:** ${{ github.sha }}
 
             ## Contents
@@ -83,9 +90,3 @@ jobs:
             ./build/xml/3DPrintedMetricThreads.xml
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      
-      - name: Test generated content
-        run: |
-          poetry run pytest -v
-          # Verify XML is valid
-          python3 -c "import xml.etree.ElementTree as ET; ET.parse('build/xml/3DPrintedMetricThreads.xml'); print('✅ Generated XML is valid')"

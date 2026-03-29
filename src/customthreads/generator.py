@@ -2,6 +2,7 @@
 
 import xml.etree.ElementTree as ET
 from .models import MetricThreadGenerator
+from .utils import format_number
 
 
 def generate_pitch_list(start, end, step):
@@ -21,18 +22,6 @@ def generate_pitch_list(start, end, step):
         pitches.append(round(current, 4))
         current += step
     return pitches
-
-
-def format_number(val):
-    """Format numbers for display (e.g., 5.0 → "5").
-    
-    Args:
-        val: Numeric value to format
-        
-    Returns:
-        String representation without unnecessary decimals
-    """
-    return str(int(val)) if val == int(val) else str(val)
 
 
 def generate_xml(
@@ -91,7 +80,7 @@ def generate_xml(
                 ET.SubElement(thread_element, "MajorDia").text = f"{thread.majorDia:.4g}"
                 ET.SubElement(thread_element, "PitchDia").text = f"{thread.pitchDia:.4g}"
                 ET.SubElement(thread_element, "MinorDia").text = f"{thread.minorDia:.4g}"
-                if thread.tapDrill:
+                if thread.tapDrill is not None:
                     ET.SubElement(thread_element, "TapDrill").text = f"{thread.tapDrill:.4g}"
 
     ET.indent(tree)

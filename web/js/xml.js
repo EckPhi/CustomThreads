@@ -28,7 +28,7 @@ export function buildXml(config, structure) {
         lines.push(`        <MajorDia>${format4g(thread.majorDia)}</MajorDia>`);
         lines.push(`        <PitchDia>${format4g(thread.pitchDia)}</PitchDia>`);
         lines.push(`        <MinorDia>${format4g(thread.minorDia)}</MinorDia>`);
-        if (thread.tapDrill) {
+        if (thread.tapDrill != null) {
           lines.push(`        <TapDrill>${format4g(thread.tapDrill)}</TapDrill>`);
         }
         lines.push("      </Thread>");

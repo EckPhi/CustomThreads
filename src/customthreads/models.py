@@ -2,6 +2,7 @@
 
 import math
 from abc import ABC, abstractmethod
+from .utils import format_number
 
 
 class Thread:
@@ -44,7 +45,6 @@ class MetricThreadGenerator(ThreadProfile):
         def __init__(self, diameter, pitch):
             self.nominalDiameter = diameter
             self.pitch = pitch
-            from .generator import format_number
             self.name = f"M{format_number(diameter)}x{format_number(pitch)}"
 
     def __init__(self, pitch_list, thread_sizes, tolerance_offsets, thread_angle):

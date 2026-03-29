@@ -1,7 +1,5 @@
 import pytest
-import os
 import xml.etree.ElementTree as ET
-from pathlib import Path
 from customthreads import (
     MetricThreadGenerator,
     generate_pitch_list,
@@ -12,21 +10,6 @@ from customthreads.generator import generate_xml
 
 class TestThreadGeneration:
     """Integration tests for thread XML generation."""
-
-    @pytest.fixture(autouse=True)
-    def cleanup(self):
-        """Clean up generated XML files after each test."""
-        yield
-        # Clean up test files
-        test_files = [
-            "test_output_1.xml",
-            "test_output_2.xml",
-            "test_output_3.xml",
-            "test_output_4.xml",
-        ]
-        for f in test_files:
-            if os.path.exists(f):
-                os.remove(f)
 
     def test_pitch_list_generation(self):
         """Test that pitch_list is generated correctly."""
@@ -50,11 +33,12 @@ class TestThreadGeneration:
         assert format_number(5.5) == "5.5"
         assert format_number(2.75) == "2.75"
 
-    def test_xml_generation_default_config(self):
+    def test_xml_generation_default_config(self, tmp_path):
         """Test XML generation with default configuration."""
+        output = tmp_path / "test_output_1.xml"
         # Generate XML with test config
         generate_xml(
-            output_filename="test_output_1.xml",
+            output_filename=str(output),
             thread_name="Test Threads",
             unit="mm",
             thread_angle=60.0,
@@ -67,10 +51,10 @@ class TestThreadGeneration:
         )
 
         # Verify file exists
-        assert os.path.exists("test_output_1.xml")
+        assert output.exists()
 
         # Parse and verify structure
-        tree = ET.parse("test_output_1.xml")
+        tree = ET.parse(output)
         root = tree.getroot()
 
         assert root.tag == "ThreadType"
@@ -79,10 +63,11 @@ class TestThreadGeneration:
         assert root.find("Angle").text == "60.0"
         assert root.find("ThreadForm").text == "8"
 
-    def test_xml_thread_sizes(self):
+    def test_xml_thread_sizes(self, tmp_path):
         """Test that XML contains expected thread sizes."""
+        output = tmp_path / "test_output_2.xml"
         generate_xml(
-            output_filename="test_output_2.xml",
+            output_filename=str(output),
             thread_name="Test Threads",
             unit="mm",
             thread_angle=60.0,
@@ -94,7 +79,7 @@ class TestThreadGeneration:
             tolerance_offsets=[0.0],
         )
 
-        tree = ET.parse("test_output_2.xml")
+        tree = ET.parse(output)
         root = tree.getroot()
 
         thread_sizes = root.findall("ThreadSize")
@@ -106,10 +91,11 @@ class TestThreadGeneration:
             assert size is not None
             assert int(size) >= 8
 
-    def test_xml_thread_designations(self):
+    def test_xml_thread_designations(self, tmp_path):
         """Test that thread designations are correctly named."""
+        output = tmp_path / "test_output_3.xml"
         generate_xml(
-            output_filename="test_output_3.xml",
+            output_filename=str(output),
             thread_name="Test Threads",
             unit="mm",
             thread_angle=60.0,
@@ -121,7 +107,7 @@ class TestThreadGeneration:
             tolerance_offsets=[0.0],
         )
 
-        tree = ET.parse("test_output_3.xml")
+        tree = ET.parse(output)
         root = tree.getroot()
 
         # Find designations
@@ -134,10 +120,11 @@ class TestThreadGeneration:
             assert "M" in des_text
             assert "x" in des_text
 
-    def test_xml_contains_threads(self):
+    def test_xml_contains_threads(self, tmp_path):
         """Test that XML contains external and internal threads."""
+        output = tmp_path / "test_output_4.xml"
         generate_xml(
-            output_filename="test_output_4.xml",
+            output_filename=str(output),
             thread_name="Test Threads",
             unit="mm",
             thread_angle=60.0,
@@ -149,15 +136,15 @@ class TestThreadGeneration:
             tolerance_offsets=[0.0, 0.1],
         )
 
-        tree = ET.parse("test_output_4.xml")
+        tree = ET.parse(output)
         root = tree.getroot()
 
         threads = root.findall(".//Thread")
         assert len(threads) > 0
 
         # Check for both genders
-        genders = {thread.find("Gender").text for thread in threads[:4]}
-        assert "external" in genders or "internal" in genders
+        genders = {thread.find("Gender").text for thread in threads}
+        assert {"external", "internal"}.issubset(genders)
 
 
 class TestThreadProfile:
