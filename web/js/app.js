@@ -62,8 +62,7 @@ shareBtn.addEventListener("click", async () => {
 
   try {
     await navigator.clipboard.writeText(shareUrl);
-    summaryEl.className = "summary ok";
-    summaryEl.innerHTML += "<br><strong>Share link copied to clipboard.</strong>";
+    renderOutput(generated, "Share link copied to clipboard.");
   } catch {
     window.prompt("Copy this share URL:", shareUrl);
   }
@@ -147,15 +146,21 @@ function renderErrors(errors) {
   downloadBtn.disabled = true;
 }
 
-function renderOutput(result) {
+function renderOutput(result, notice = "") {
   summaryEl.className = "summary ok";
-  summaryEl.innerHTML = [
+  const lines = [
     `<strong>Generated:</strong> ${result.filename}`,
     `<strong>Thread Sizes:</strong> ${result.summary.sizeCount}`,
     `<strong>Designations:</strong> ${result.summary.designationCount}`,
     `<strong>Thread Nodes:</strong> ${result.summary.threadCount}`,
     `<strong>Range:</strong> ${result.firstDesignation} to ${result.lastDesignation}`,
-  ].join("<br>");
+  ];
+
+  if (notice) {
+    lines.push(`<strong>${notice}</strong>`);
+  }
+
+  summaryEl.innerHTML = lines.join("<br>");
 
   const previewLines = result.xml.split("\n").slice(0, 80).join("\n");
   previewEl.textContent = previewLines;
