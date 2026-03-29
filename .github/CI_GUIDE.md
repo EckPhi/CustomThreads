@@ -6,7 +6,7 @@ This document explains the GitHub Actions workflow for automatically generating 
 
 The automated pipeline ensures that:
 1. ✅ XML files are **never committed** to the repository
-2. ✅ Every push to `main` triggers a new release
+2. ✅ Every push to `master` triggers a new release
 3. ✅ Tests run before each release to ensure quality
 4. ✅ Releases are timestamped with UTC datetime
 5. ✅ Users always have access to the latest profiles
@@ -23,7 +23,7 @@ The workflow runs on:
 on:
   push:
     branches:
-      - main          # Automatic on every push to main
+      - master        # Automatic on every push to master
   workflow_dispatch:  # Manual trigger via GitHub UI
 ```
 
@@ -36,29 +36,29 @@ on:
 - Cache dependencies
 
 #### 2. Generate (automatic)
-- Run all tests to verify code quality
 - Generate XML files using `poetry run python -m customthreads.cli`
 - Place artifacts in `build/xml/` directory
 
-#### 3. Release (automatic)
-- Create Git tag with datetime format: `v{YYYY}.{MM}.{DD}-{HHMM}`
+#### 3. Verify (automatic)
+- Run all tests to verify code quality
+- Validate generated XML structure
+
+#### 4. Release (automatic)
+- Create Git tag with datetime format: `v{YYYY}.{MM}.{DD}-{HHMMSS}-r{RUN_NUMBER}`
 - Create GitHub Release with metadata
 - Upload XML file as downloadable artifact
 
-#### 4. Verify (automatic)
-- Validate generated XML structure
-- Ensure all tests passed
-
 ### Versioning Scheme
 
-Release versions use **calendar versioning with minute precision**:
+Release versions use **calendar versioning with second precision + run number**:
 
 ```
-v2026.03.29-1245
+v2026.03.29-124530-r42
  └─ 2026: Year
     └─ 03: Month (March)
        └─ 29: Day
-          └─ 1245: Time in UTC (12:45 UTC)
+       └─ 124530: Time in UTC (12:45:30 UTC)
+         └─ r42: GitHub Actions run number
 ```
 
 **Advantages:**
@@ -68,9 +68,9 @@ v2026.03.29-1245
 - Preserves full timestamp accuracy
 
 **Examples:**
-- `v2026.03.29-0000` = March 29, 2026 at midnight UTC
-- `v2026.03.29-1200` = March 29, 2026 at noon UTC
-- `v2026.12.31-2359` = December 31, 2026 at 23:59 UTC
+- `v2026.03.29-000000-r7` = March 29, 2026 at midnight UTC, run 7
+- `v2026.03.29-120000-r12` = March 29, 2026 at noon UTC, run 12
+- `v2026.12.31-235959-r128` = December 31, 2026 at 23:59:59 UTC, run 128
 
 ## Using Releases
 
@@ -160,7 +160,7 @@ Edit the `body` section of `create-release` step:
 ### Release Not Created
 
 1. Check "Actions" tab for workflow errors
-2. Verify branch is `main` (not a feature branch)
+2. Verify branch is `master` (not a feature branch)
 3. Ensure `pyproject.toml` is present
 4. Check Poetry dependencies are correct
 
@@ -172,7 +172,7 @@ Edit the `body` section of `create-release` step:
 
 ### Workflow Not Triggering
 
-1. Verify `.github/workflows/generate-xml-release.yml` is in `main` branch
+1. Verify `.github/workflows/generate-xml-release.yml` is in `master` branch
 2. Check repository settings → Actions permissions are enabled
 3. Ensure your GitHub token has write access to releases
 

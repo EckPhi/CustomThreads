@@ -142,10 +142,10 @@ This project uses **GitHub Actions** to automatically generate and publish threa
 
 ### Release Versioning
 
-- **Format:** `v{YYYY}.{MM}.{DD}-{HHMM}` (UTC time)
+- **Format:** `v{YYYY}.{MM}.{DD}-{HHMMSS}-r{RUN_NUMBER}` (UTC time + workflow run number)
 - **Examples:** 
-	- `v2026.03.29-1000` = March 29, 2026 at 10:00 UTC
-	- `v2026.03.29-1245` = March 29, 2026 at 12:45 UTC
+	- `v2026.03.29-100000-r5` = March 29, 2026 at 10:00:00 UTC, run 5
+	- `v2026.03.29-124530-r9` = March 29, 2026 at 12:45:30 UTC, run 9
 
 ### Key Features
 
@@ -187,7 +187,7 @@ These offset values from nominal dimensions allow fine-tuning for different prin
 |-----------|-------|
 | **Diameters** | 8-50mm (all integer values) |
 | **Pitches** | 1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0, 5.5, 6.0mm |
-| **Thread Type** | ISO Metric (60° Whitworth) |
+| **Thread Type** | ISO Metric (60° flank angle) |
 | **Optimized for** | FDM 3D printing (0.2-0.3mm layer height) |
 
 ## GitHub Pages Deployment
