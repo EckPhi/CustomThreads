@@ -45,9 +45,6 @@ coverage.xml
 .hypothesis/
 .pytest_cache/
 
-# Poetry
-poetry.lock
-
 # Virtual environments
 venv/
 ENV/
@@ -70,5 +67,3 @@ env/
 /dist/
 /output/
 
-# GitHub Actions
-.github/workflows/
