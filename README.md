@@ -4,6 +4,20 @@ Generate standardized ISO metric thread profiles optimized for 3D printing in XM
 
 ## Quick Start
 
+### Use the Web Generator
+
+The browser generator is in [web/index.html](web/index.html) and is deployed through GitHub Pages.
+
+- Local preview:
+
+```bash
+cd web
+python3 -m http.server 8080
+```
+
+- Open `http://localhost:8080`
+- Generate and download `3DPrintedMetricThreads.xml`
+
 ### Download Pre-Generated XML Files
 
 The latest XML thread profiles are automatically generated and available as GitHub Releases:
@@ -28,7 +42,8 @@ Simply download the `3DPrintedMetricThreads.xml` file and follow the installatio
 ```
 .
 ├── .github/workflows/          # CI/CD pipeline
-│   └── generate-xml-release.yml
+│   ├── generate-xml-release.yml
+│   └── deploy-pages.yml
 ├── src/customthreads/          # Python package (core logic)
 │   ├── __init__.py
 │   ├── models.py               # Thread model classes
@@ -36,7 +51,7 @@ Simply download the `3DPrintedMetricThreads.xml` file and follow the installatio
 │   └── cli.py                  # Command-line interface
 ├── tests/                      # Test suite
 │   └── test_main.py
-├── web/                        # JavaScript/web generator (future)
+├── web/                        # GitHub Pages generator app
 ├── pyproject.toml              # Poetry configuration
 ├── README.md
 └── .gitignore
@@ -76,7 +91,7 @@ Edit `src/customthreads/cli.py` to customize parameters:
 
 ### Run Tests
 
-```python
+```bash
 poetry run pytest -v
 ```
 
@@ -172,9 +187,15 @@ These offset values from nominal dimensions allow fine-tuning for different prin
 | **Thread Type** | ISO Metric (60° Whitworth) |
 | **Optimized for** | FDM 3D printing (0.2-0.3mm layer height) |
 
-## Future: JavaScript Implementation
+## GitHub Pages Deployment
 
-The `web/` directory is reserved for an interactive JavaScript-based generator that will be deployable on GitHub Pages, allowing users to generate custom profiles directly in their browser.
+The web app is deployed by [.github/workflows/deploy-pages.yml](.github/workflows/deploy-pages.yml).
+
+- Trigger: push to `main` when files under [web](web) change
+- Source artifact: [web](web)
+- Publish target: GitHub Pages environment
+
+If Pages is not enabled yet in repository settings, enable it once and keep source as GitHub Actions.
 
 ## License
 
@@ -185,4 +206,3 @@ See LICENSE file for details
 - [Fusion 360 Custom Threads Documentation](https://knowledge.autodesk.com/support/fusion-360/learn-explore/caas/sfdcarticles/sfdcarticles/Custom-Threads-in-Fusion-360.html)
 - [ISO Metric Screw Thread (Wikipedia)](https://en.wikipedia.org/wiki/ISO_metric_screw_thread)
 - [ThreadKeeper - Fusion 360 Plugin](https://github.com/thomasa88/ThreadKeeper)
-```
