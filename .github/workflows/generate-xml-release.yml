@@ -3,7 +3,7 @@ name: Generate and Release XML Thread Profiles
 on:
   push:
     branches:
-      - main
+      - master
   workflow_dispatch:  # Allow manual trigger
 
 env:

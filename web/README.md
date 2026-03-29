@@ -31,7 +31,7 @@ Then open `http://localhost:8080`.
 
 Deployment is handled by `.github/workflows/deploy-pages.yml`.
 
-- Trigger: push to `main` when files in `web/` change
+- Trigger: push to `master` when files in `web/` change
 - Output: published GitHub Pages site from this folder
 
 ## Behavior Parity

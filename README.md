@@ -129,7 +129,7 @@ This project uses **GitHub Actions** to automatically generate and publish threa
 **Workflow File:** `.github/workflows/generate-xml-release.yml`
 
 **Trigger Events:**
-- ✅ Every push to `main` branch
+- ✅ Every push to `master` branch
 - ✅ Manual trigger via GitHub Actions UI (workflow_dispatch)
 
 **Pipeline Steps:**
@@ -194,7 +194,7 @@ These offset values from nominal dimensions allow fine-tuning for different prin
 
 The web app is deployed by [.github/workflows/deploy-pages.yml](.github/workflows/deploy-pages.yml).
 
-- Trigger: push to `main` when files under [web](web) change
+- Trigger: push to `master` when files under [web](web) change
 - Source artifact: [web](web)
 - Publish target: GitHub Pages environment
 
