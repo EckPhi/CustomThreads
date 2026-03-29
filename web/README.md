@@ -1,16 +1,46 @@
-# Web Generator (Future)
+# Web Generator
 
-This directory will contain the JavaScript/web implementation of the thread generator for deployment on GitHub Pages.
+This folder contains the GitHub Pages web app for generating Fusion 360 thread XML directly in the browser.
 
-## Planned Structure
+## Files
 
-- `index.html` - Main web interface
-- `app.js` - Core generator logic (ported from Python)
-- `style.css` - Styling
-- `lib/` - Dependencies and utilities
+- `index.html`: UI layout and form inputs
+- `style.css`: App styling and responsive layout
+- `js/calculator.js`: Ported thread calculation logic from Python
+- `js/xml.js`: XML assembly and file download helpers
+- `js/app.js`: Form wiring, validation, preview, and download actions
 
-## Notes
+## Local Run
 
-- The core thread generation algorithm will be ported from Python to JavaScript
-- Users will be able to configure pitch ranges, thread sizes, and tolerance offsets in a browser
-- Generated XML can be downloaded directly
+Because the app uses ES modules, serve it through a local web server instead of opening `index.html` directly.
+
+Example with Python:
+
+```bash
+cd web
+python3 -m http.server 8080
+```
+
+Then open `http://localhost:8080`.
+
+## Deploy
+
+Deployment is handled by `.github/workflows/deploy-pages.yml`.
+
+- Trigger: push to `main` when files in `web/` change
+- Output: published GitHub Pages site from this folder
+
+## Behavior Parity
+
+The browser generator mirrors Python logic from:
+
+- `src/customthreads/generator.py`
+- `src/customthreads/models.py`
+
+It preserves:
+
+- Pitch range generation with floating-point guard
+- Designation format: `M{size}x{pitch}`
+- Tolerance class labels: `O.x`
+- Metric geometry formulas for major/pitch/minor diameters
+- XML node structure compatible with Fusion 360 thread files
