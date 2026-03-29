@@ -17,6 +17,7 @@ python3 -m http.server 8080
 
 - Open `http://localhost:8080`
 - Generate and download `3DPrintedMetricThreads.xml`
+- Use Copy Share Link to share a prefilled generator configuration via URL
 
 ### Download Pre-Generated XML Files
 

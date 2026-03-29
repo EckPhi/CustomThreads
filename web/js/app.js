@@ -6,8 +6,11 @@ const errorsEl = document.querySelector("#errors");
 const summaryEl = document.querySelector("#summary");
 const previewEl = document.querySelector("#xmlPreview");
 const downloadBtn = document.querySelector("#downloadBtn");
+const shareBtn = document.querySelector("#shareBtn");
 
 let generated = null;
+
+hydrateFormFromUrl();
 
 form.addEventListener("submit", (event) => {
   event.preventDefault();
@@ -36,6 +39,7 @@ form.addEventListener("submit", (event) => {
 
   renderErrors([]);
   renderOutput(generated);
+  writeUrlFromConfig(config);
   downloadBtn.disabled = false;
 });
 
@@ -44,6 +48,25 @@ downloadBtn.addEventListener("click", () => {
     return;
   }
   downloadTextFile(generated.filename, generated.xml);
+});
+
+shareBtn.addEventListener("click", async () => {
+  const parseResult = parseConfig(form);
+  if (!parseResult.ok) {
+    renderErrors(parseResult.errors);
+    return;
+  }
+
+  writeUrlFromConfig(parseResult.config);
+  const shareUrl = window.location.href;
+
+  try {
+    await navigator.clipboard.writeText(shareUrl);
+    summaryEl.className = "summary ok";
+    summaryEl.innerHTML += "<br><strong>Share link copied to clipboard.</strong>";
+  } catch {
+    window.prompt("Copy this share URL:", shareUrl);
+  }
 });
 
 function parseConfig(formElement) {
@@ -141,4 +164,49 @@ function renderOutput(result) {
 function ensureXmlFilename(filename) {
   const clean = filename.trim() || "3DPrintedMetricThreads.xml";
   return clean.toLowerCase().endsWith(".xml") ? clean : `${clean}.xml`;
+}
+
+function hydrateFormFromUrl() {
+  const params = new URLSearchParams(window.location.search);
+  if (params.size === 0) {
+    return;
+  }
+
+  setIfPresent("threadName", params.get("threadName"));
+  setIfPresent("pitchStart", params.get("pitchStart"));
+  setIfPresent("pitchEnd", params.get("pitchEnd"));
+  setIfPresent("pitchStep", params.get("pitchStep"));
+  setIfPresent("sizeMin", params.get("sizeMin"));
+  setIfPresent("sizeMax", params.get("sizeMax"));
+  setIfPresent("offsets", params.get("offsets"));
+  setIfPresent("unit", params.get("unit"));
+  setIfPresent("angle", params.get("angle"));
+  setIfPresent("threadForm", params.get("threadForm"));
+  setIfPresent("filename", params.get("filename"));
+}
+
+function setIfPresent(fieldName, value) {
+  if (value === null) {
+    return;
+  }
+  const field = form.querySelector(`[name="${fieldName}"]`);
+  if (field) {
+    field.value = value;
+  }
+}
+
+function writeUrlFromConfig(config) {
+  const url = new URL(window.location.href);
+  url.searchParams.set("threadName", config.threadName);
+  url.searchParams.set("pitchStart", String(config.pitchStart));
+  url.searchParams.set("pitchEnd", String(config.pitchEnd));
+  url.searchParams.set("pitchStep", String(config.pitchStep));
+  url.searchParams.set("sizeMin", String(config.threadSizes[0]));
+  url.searchParams.set("sizeMax", String(config.threadSizes[config.threadSizes.length - 1]));
+  url.searchParams.set("offsets", config.toleranceOffsets.join(","));
+  url.searchParams.set("unit", config.unit);
+  url.searchParams.set("angle", String(config.threadAngle));
+  url.searchParams.set("threadForm", String(config.threadForm));
+  url.searchParams.set("filename", config.filename);
+  window.history.replaceState({}, "", url);
 }

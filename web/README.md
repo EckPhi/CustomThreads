@@ -10,6 +10,8 @@ This folder contains the GitHub Pages web app for generating Fusion 360 thread X
 - `js/xml.js`: XML assembly and file download helpers
 - `js/app.js`: Form wiring, validation, preview, and download actions
 
+Phase 2 UX includes shareable URLs for prefilled configurations.
+
 ## Local Run
 
 Because the app uses ES modules, serve it through a local web server instead of opening `index.html` directly.
