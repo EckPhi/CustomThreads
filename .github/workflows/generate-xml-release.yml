@@ -57,39 +57,30 @@ jobs:
           echo "version=$VERSION" >> $GITHUB_OUTPUT
           echo "Version: $VERSION"
       
-      - name: Create Release
-        uses: actions/create-release@v1
-        id: create_release
+      - name: Create release and upload asset
+        uses: softprops/action-gh-release@v2
         with:
           draft: false
           prerelease: false
-          release_name: XML Thread Profiles ${{ steps.version.outputs.version }}
+          name: XML Thread Profiles ${{ steps.version.outputs.version }}
           tag_name: ${{ steps.version.outputs.version }}
           body: |
             Automatically generated 3D-printed metric thread profiles in XML format.
-            
+
             **Generated:** ${{ github.event.head_commit.timestamp }}
             **Commit:** ${{ github.sha }}
-            
+
             ## Contents
-            - `3DPrintedMetricThreads.xml` - Thread profiles from 3.5mm to 50mm diameter, pitches 1.0mm to 6.0mm, 5 tolerance classes (O.0 to O.8)
-            
+            - `3DPrintedMetricThreads.xml` - Thread profiles from 8mm to 50mm diameter, pitches 1.0mm to 6.0mm, 5 tolerance classes (O.0 to O.8)
+
             ## Usage
             1. Download the XML file
             2. Place in Fusion 360 thread data directory (see README)
             3. Restart Fusion 360
-            
+
             Use these profiles for 3D-printed metric threads optimized for FDM printing.
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      
-      - name: Upload Release Asset
-        uses: actions/upload-release-asset@v1
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./build/xml/3DPrintedMetricThreads.xml
-          asset_name: 3DPrintedMetricThreads.xml
-          asset_content_type: application/xml
+          files: |
+            ./build/xml/3DPrintedMetricThreads.xml
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       
